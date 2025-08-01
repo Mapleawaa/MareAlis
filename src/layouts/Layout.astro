@@ -229,30 +229,28 @@ async function updatePageViewCounters() {
 }
 
 			// 从Umami获取页面统计数据
-			async function fetchPageStats(pageUrl: string): Promise<UmamiPageStats | null> {
-			  try {
-			    // 检测是否为开发环境
-			    const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-			    console.log('当前环境:', isDev ? '开发环境' : '生产环境');
-			    console.log('请求URL路径:', pageUrl);
-			    
-			    // 在开发环境中返回固定的浏览量数据
-			    if (isDev) {
-			      console.log('开发环境 - 显示固定浏览量数据: 999');
-			      return {
-			        pageviews: { value: 999, prev: 0 },
-			        visits: { value: 999, prev: 0 }
-			      };
-			    }
-			    
-			    try {
-			      // 使用Share链接获取统计数据
-			      // 从用户提供的Share链接中提取shareId
-			      const shareId = 'cvYThq4zxIRT9F0K';
-			      const domain = 'mcyre.cc';
-			      
-			      // 判断是否是首页的整站浏览量请求
-			      const isHomepageTotal = pageUrl === '/' && document.querySelector('[data-umami-pageviews="/"]')?.closest('.widget-profile') !== null;
+async function fetchPageStats(pageUrl: string, isHomepageTotal: boolean = false): Promise<UmamiPageStats | null> {
+  try {
+    // 检测是否为开发环境
+    const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    console.log('当前环境:', isDev ? '开发环境' : '生产环境');
+    console.log('请求URL路径:', pageUrl);
+    console.log('是否为首页整站浏览量:', isHomepageTotal);
+    
+    // 在开发环境中返回固定的浏览量数据
+    if (isDev) {
+      console.log('开发环境 - 显示固定浏览量数据: 999');
+      return {
+        pageviews: { value: 999, prev: 0 },
+        visits: { value: 999, prev: 0 }
+      };
+    }
+    
+    try {
+      // 使用Share链接获取统计数据
+      // 从用户提供的Share链接中提取shareId
+      const shareId = 'cvYThq4zxIRT9F0K';
+      const domain = 'mcyre.cc';
 			      
 			      // 构建完整的URL路径，确保格式正确
 			      // 如果pageUrl不是以/开头，添加/
