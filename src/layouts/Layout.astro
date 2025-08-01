@@ -242,40 +242,59 @@ async function updatePageViewCounters() {
 			    }
 			    
 			    // 生产环境下使用真实的API调用
-			    const websiteId = 'a66a5fd4-98b0-4108-8606-cb7094f380ac'; // 网站ID
-			    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ3ZWJzaXRlSWQiOiJhZjRjNWMxNS00NWVhLTQ2MmMtOTU2Ni02ZjdkOTMwNjM2ZWMiLCJpYXQiOjE3NTQwNTE2MTl9.AIa6DIWVefOr5ELksZ8lqnO74_4pGbZKHBS75x27G0s'; // 分享Token
-			    const endAt = Date.now(); // 当前时间戳
-			    const startAt = 0; // 从1970年开始统计
-			    
-			    // 确保URL正确编码
-			    const encodedUrl = encodeURIComponent(pageUrl);
-			    console.log('编码后URL:', encodedUrl);
-			    
-			    // 构建API URL
-			    const apiUrl = `https://us.umami.is/api/websites/${websiteId}/stats?startAt=${startAt}&endAt=${endAt}&unit=hour&timezone=Asia/Hong_Kong&url=${encodedUrl}&compare=false`;
-			    console.log('完整API URL:', apiUrl);
+			    // 第一步：获取网站ID和Token
+			    const shareId = '7PoDRgCzHFTs2vWB'; // Umami分享ID
 			    
 			    try {
-			      // 发送请求
-			      const response = await fetch(apiUrl, {
-			        headers: {
-			          'x-umami-share-token': token,
-			          'Accept': 'application/json'
-			        }
-			      });
+			      // 获取网站ID和Token
+			      const shareResponse = await fetch(`https://us.umami.is/api/share/${shareId}`);
 			      
-			      if (!response.ok) {
-			        console.error(`API请求失败: ${response.status}`);
-			        // 如果API请求失败，返回固定的浏览量数据
+			      if (!shareResponse.ok) {
+			        console.error(`获取分享信息失败: ${shareResponse.status}`);
 			        return {
 			          pageviews: { value: 888, prev: 0 },
 			          visits: { value: 888, prev: 0 }
 			        };
 			      }
 			      
-			      const data = await response.json();
-			      console.log('获取到的统计数据:', data);
-			      return data;
+			      const shareData = await shareResponse.json();
+			      console.log('获取到的分享信息:', shareData);
+			      
+			      const websiteId = shareData.websiteId;
+			      const token = shareData.token;
+			      
+			      // 第二步：使用获取到的Token请求页面统计数据
+			      const endAt = Date.now(); // 当前时间戳
+			      const startAt = 0; // 从1970年开始统计
+			      
+			      // 确保URL正确编码
+			      const encodedUrl = encodeURIComponent(pageUrl);
+			      console.log('编码后URL:', encodedUrl);
+			      
+			      // 构建API URL
+			      const apiUrl = `https://us.umami.is/api/websites/${websiteId}/stats?startAt=${startAt}&endAt=${endAt}&unit=hour&timezone=Asia/Hong_Kong&url=${encodedUrl}&compare=false`;
+			      console.log('完整API URL:', apiUrl);
+			      
+			      // 发送请求获取统计数据
+			      const statsResponse = await fetch(apiUrl, {
+			        headers: {
+			          'x-umami-share-token': token,
+			          'Accept': 'application/json'
+			        }
+			      });
+			      
+			      if (!statsResponse.ok) {
+			        console.error(`获取统计数据失败: ${statsResponse.status}`);
+			        return {
+			          pageviews: { value: 888, prev: 0 },
+			          visits: { value: 888, prev: 0 }
+			        };
+			      }
+			      
+			      const statsData = await statsResponse.json();
+			      console.log('获取到的统计数据:', statsData);
+			      return statsData;
+			      
 			    } catch (error) {
 			      console.error('API请求出错:', error);
 			      // 如果发生错误，返回固定的浏览量数据
