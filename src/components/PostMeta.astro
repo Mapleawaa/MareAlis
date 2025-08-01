@@ -26,6 +26,13 @@ const className = Astro.props.class;
 ---
 
 <div class:list={["flex flex-wrap text-neutral-500 dark:text-neutral-400 items-center gap-4 gap-x-4 gap-y-2", className]}>
+    <!-- pageviews -->
+    <div class="flex items-center">
+        <div class="meta-icon">
+            <Icon name="material-symbols:visibility-outline-rounded" class="text-xl"></Icon>
+        </div>
+        <span data-umami-pageviews={Astro.url.pathname} class="text-50 text-sm font-medium">加载中...</span>
+    </div>
     <!-- publish date -->
     <div class="flex items-center">
         <div class="meta-icon"
