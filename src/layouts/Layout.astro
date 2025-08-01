@@ -252,8 +252,8 @@ async function updatePageViewCounters() {
 			      const fullPath = pageUrl.startsWith('/') ? pageUrl : `/${pageUrl}`;
 			      console.log('完整路径:', fullPath);
 			      
-			      // 构建API URL
-			      const apiUrl = `https://cloud.umami.is/api/website/${shareId}/stats?url=${encodeURIComponent(fullPath)}`;
+			      // 构建API URL - 使用us.umami.is而不是cloud.umami.is
+			      const apiUrl = `https://us.umami.is/api/website/${shareId}/stats?url=${encodeURIComponent(fullPath)}`;
 			      console.log('API URL:', apiUrl);
 			      
 			      // 发送请求获取统计数据
@@ -308,8 +308,8 @@ async function updatePageViewCounters() {
 			    const encodedUrl = encodeURIComponent(pageUrl);
 			    console.log('编码后URL:', encodedUrl);
 			    
-			    // 构建API URL
-			    const apiUrl = `https://cloud.umami.is/api/websites/${websiteId}/stats?startAt=${startAt}&endAt=${endAt}&unit=hour&timezone=Asia/Hong_Kong&url=${encodedUrl}&compare=false`;
+			    // 构建API URL - 使用us.umami.is而不是cloud.umami.is
+			    const apiUrl = `https://us.umami.is/api/websites/${websiteId}/stats?startAt=${startAt}&endAt=${endAt}&unit=hour&timezone=Asia/Hong_Kong&url=${encodedUrl}&compare=false`;
 			    console.log('备用API URL:', apiUrl);
 			    
 			    // 发送请求获取统计数据
