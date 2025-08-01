@@ -203,7 +203,11 @@ async function updatePageViewCounters() {
       const normalizedUrl = url.startsWith('/') ? url : `/${url}`;
       console.log(`规范化后的URL: ${normalizedUrl}`);
       
-      const stats = await fetchPageStats(normalizedUrl);
+      // 判断是否是首页的整站浏览量请求
+      const isHomepageTotal = normalizedUrl === '/' && counter.closest('.widget-profile') !== null;
+      console.log(`是否为首页整站浏览量: ${isHomepageTotal}`);
+      
+      const stats = await fetchPageStats(normalizedUrl, isHomepageTotal);
       if (stats && stats.pageviews && stats.visits) {
         // 显示浏览量和访问数
         const pageviews = typeof stats.pageviews === 'object' ? stats.pageviews.value : stats.pageviews;
