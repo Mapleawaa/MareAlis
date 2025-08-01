@@ -247,13 +247,19 @@ async function updatePageViewCounters() {
 			      const shareId = 'cvYThq4zxIRT9F0K';
 			      const domain = 'mcyre.cc';
 			      
+			      // 判断是否是首页的整站浏览量请求
+			      const isHomepageTotal = pageUrl === '/' && document.querySelector('[data-umami-pageviews="/"]')?.closest('.widget-profile') !== null;
+			      
 			      // 构建完整的URL路径，确保格式正确
 			      // 如果pageUrl不是以/开头，添加/
 			      const fullPath = pageUrl.startsWith('/') ? pageUrl : `/${pageUrl}`;
 			      console.log('完整路径:', fullPath);
 			      
 			      // 构建API URL - 使用us.umami.is而不是cloud.umami.is
-			      const apiUrl = `https://us.umami.is/api/website/${shareId}/stats?url=${encodeURIComponent(fullPath)}`;
+			      // 如果是首页的整站浏览量请求，则不添加url参数，获取整站数据
+			      const apiUrl = isHomepageTotal
+			        ? `https://us.umami.is/api/website/${shareId}/stats`
+			        : `https://us.umami.is/api/website/${shareId}/stats?url=${encodeURIComponent(fullPath)}`;
 			      console.log('API URL:', apiUrl);
 			      
 			      // 发送请求获取统计数据
@@ -262,7 +268,7 @@ async function updatePageViewCounters() {
 			      if (!response.ok) {
 			        console.error(`获取统计数据失败: ${response.status}`);
 			        // 尝试使用备用方法
-			        return await fetchPageStatsBackup(fullPath);
+			        return await fetchPageStatsBackup(fullPath, isHomepageTotal);
 			      }
 			      
 			      const data = await response.json();
@@ -274,13 +280,13 @@ async function updatePageViewCounters() {
 			      } else {
 			        console.error('返回的数据格式不符合预期:', data);
 			        // 尝试使用备用方法
-			        return await fetchPageStatsBackup(fullPath);
+			        return await fetchPageStatsBackup(fullPath, isHomepageTotal);
 			      }
 			      
 			    } catch (error) {
 			      console.error('获取统计数据失败:', error);
 			      // 尝试使用备用方法
-			      return await fetchPageStatsBackup(pageUrl);
+			      return await fetchPageStatsBackup(pageUrl, pageUrl === '/');
 			    }
 			  } catch (error) {
   			    console.error('获取页面统计数据失败:', error);
@@ -293,7 +299,7 @@ async function updatePageViewCounters() {
 			}
 			
 			// 备用方法：使用网站ID和Token获取统计数据
-			async function fetchPageStatsBackup(pageUrl: string): Promise<UmamiPageStats | null> {
+			async function fetchPageStatsBackup(pageUrl: string, isHomepageTotal: boolean = false): Promise<UmamiPageStats | null> {
 			  try {
 			    console.log('使用备用方法获取统计数据...');
 			    // 网站ID和Token
@@ -309,7 +315,10 @@ async function updatePageViewCounters() {
 			    console.log('编码后URL:', encodedUrl);
 			    
 			    // 构建API URL - 使用us.umami.is而不是cloud.umami.is
-			    const apiUrl = `https://us.umami.is/api/websites/${websiteId}/stats?startAt=${startAt}&endAt=${endAt}&unit=hour&timezone=Asia/Hong_Kong&url=${encodedUrl}&compare=false`;
+			    // 如果是首页的整站浏览量请求，则不添加url参数，获取整站数据
+			    const apiUrl = isHomepageTotal
+			      ? `https://us.umami.is/api/websites/${websiteId}/stats?startAt=${startAt}&endAt=${endAt}&unit=hour&timezone=Asia/Hong_Kong&compare=false`
+			      : `https://us.umami.is/api/websites/${websiteId}/stats?startAt=${startAt}&endAt=${endAt}&unit=hour&timezone=Asia/Hong_Kong&url=${encodedUrl}&compare=false`;
 			    console.log('备用API URL:', apiUrl);
 			    
 			    // 发送请求获取统计数据
