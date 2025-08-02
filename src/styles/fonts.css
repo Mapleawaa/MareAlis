@@ -1,0 +1,27 @@
+/* 全局字体设置 */
+:root {
+  --font-chinese: 'LXGW Wenkai', 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', 'WenQuanYi Micro Hei', sans-serif;
+  --font-english: 'MapleMono-CN', 'Menlo', 'Monaco', 'Consolas', 'Courier New', monospace;
+  --font-mono: 'LXGW WenKai Mono', 'MapleMono-CN', 'JetBrains Mono Variable', monospace;
+}
+
+/* 全局字体设置 */
+html {
+  font-family: var(--font-chinese), var(--font-english);
+}
+
+/* 代码字体设置 */
+code, pre, .code-block {
+  font-family: var(--font-mono);
+}
+
+/* 添加全局样式 */
+body {
+  font-family: var(--font-chinese);
+  font-weight: normal;
+}
+
+/* 英文使用Maple Mono */
+:lang(en) {
+  font-family: var(--font-english);
+}

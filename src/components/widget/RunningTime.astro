@@ -1,0 +1,98 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+	class?: string;
+}
+
+const className = Astro.props.class;
+---
+<div class:list={[className, "card-base p-3"]}>
+    <div class="px-2">
+        <div class="text-center text-neutral-400 mb-2.5 transition italic" id="hitokoto-container">
+            <span id="hitokoto" class="text-sm">加载中...</span>
+            <div class="text-xs mt-1 text-right text-neutral-300" id="hitokoto-from"></div>
+        </div>
+        <div class="h-1 w-5 bg-[var(--primary)] mx-auto rounded-full mb-2 transition"></div>
+        <div class="flex items-center justify-center text-neutral-400 mb-2.5 transition">
+            <Icon name="material-symbols:timer-outline" class="text-xl mr-1"></Icon>
+            <span id="running-time" class="text-sm">计算中...</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 更新运行时间函数
+    function updateRunningTime() {
+        const startDate = new Date('2025-08-01T12:00:00');
+        const currentDate = new Date();
+        const timeDiff = currentDate - startDate;
+        
+        // 如果当前时间早于开始时间，显示倒计时
+        if (timeDiff < 0) {
+            const absTimeDiff = Math.abs(timeDiff);
+            const days = Math.floor(absTimeDiff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((absTimeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((absTimeDiff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((absTimeDiff % (1000 * 60)) / 1000);
+            
+            document.getElementById('running-time').textContent = `距离开始还有 ${days}天 ${hours}小时 ${minutes}分 ${seconds}秒`;
+        } else {
+            // 计算已运行时间
+            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+            
+            document.getElementById('running-time').textContent = `已运行 ${days}天 ${hours}小时 ${minutes}分 ${seconds}秒`;
+        }
+    }
+
+    // 使用本地一言数据
+    function fetchHitokoto() {
+        const hitokotoElement = document.getElementById('hitokoto');
+        const fromElement = document.getElementById('hitokoto-from');
+        
+        // 本地一言数据
+        const hitokotoList = [
+            { hitokoto: '生活不止眼前的苟且，还有诗和远方。', from: '《平凡的世界》', from_who: '路遥' },
+            { hitokoto: '人生就像一场旅行，不必在乎目的地，在乎的是沿途的风景以及看风景的心情。', from: '《千与千寻》', from_who: '宫崎骏' },
+            { hitokoto: '不要等待机会，而要创造机会。', from: '《论语》', from_who: '孔子' },
+            { hitokoto: '世界上最远的距离不是生与死，而是我站在你面前，你却不知道我爱你。', from: '《飞鸟集》', from_who: '泰戈尔' },
+            { hitokoto: '人生如逆旅，我亦是行人。', from: '《临江仙》', from_who: '苏轼' },
+            { hitokoto: '我欲穿花寻路，直入白云深处。', from: '《一剪梅》', from_who: '李清照' },
+            { hitokoto: '我们读诗、写诗并不是因为它们好玩，而是因为我们是人类的一分子，而人类是充满激情的。', from: '《死亡诗社》', from_who: '' },
+            { hitokoto: '我们都是阴沟里的虫子，但总还是有人仰望星空。', from: '《悲惨世界》', from_who: '雨果' },
+            { hitokoto: '如果你给我的，和你给别人的是一样的，那我就不要了。', from: '《后来》', from_who: '刘若英' },
+            { hitokoto: '有些事情本身我们无法控制，只好控制自己。', from: '《教父》', from_who: '' }
+        ];
+        
+        // 随机选择一条一言
+        const randomIndex = Math.floor(Math.random() * hitokotoList.length);
+        const hitokotoData = hitokotoList[randomIndex];
+        
+        if (hitokotoElement) {
+            hitokotoElement.textContent = hitokotoData.hitokoto;
+        }
+        
+        if (fromElement) {
+            fromElement.textContent = hitokotoData.from_who ? `——${hitokotoData.from} · ${hitokotoData.from_who}` : `——${hitokotoData.from}`;
+        }
+    }
+
+    // 初始更新
+    updateRunningTime();
+    fetchHitokoto();
+    
+    // 每秒更新一次运行时间
+    setInterval(updateRunningTime, 1000);
+
+    // 支持 Swup 页面切换
+    document.addEventListener('swup:contentReplaced', function() {
+        // 确保元素存在后再更新
+        if (document.getElementById('running-time')) {
+            updateRunningTime();
+            fetchHitokoto();
+        }
+    });
+</script>

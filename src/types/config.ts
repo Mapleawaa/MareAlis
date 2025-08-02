@@ -20,6 +20,13 @@ export type SiteConfig = {
 			url?: string;
 		};
 	};
+	background: {
+		enable: boolean;
+		src: string;
+		opacity?: number; // 0-100 透明度
+		position?: "top" | "center" | "bottom";
+		fixed?: boolean; // 是否固定背景
+	};
 	toc: {
 		enable: boolean;
 		depth: 1 | 2 | 3;

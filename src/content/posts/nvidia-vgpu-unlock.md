@@ -1,8 +1,8 @@
 ---
 title: NVIDIA-VGPU-UNLOCK 项目支持的显卡型号列表
 description: 不支持的型号不在榜单内。不支持的原因可能是驱动限制或是开发者没有适配型号。
-pubDate: 2023-06-15
-update: 2023-06-15
+pubDate: 2025-08-01
+update: 2025-08-01
 cover: /posts-img/nvidia-vgpu-unlock.webp
 tags: [NVIDIA, VGPU, 虚拟化]
 category: 技术

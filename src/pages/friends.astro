@@ -1,0 +1,47 @@
+---
+import MainGridLayout from "../layouts/MainGridLayout.astro";
+import { i18n } from "../i18n/translation";
+import I18nKey from "../i18n/i18nKey";
+import { friendLinks } from "../data/friends";
+
+---
+
+<MainGridLayout title="友情链接" description="友情链接">
+  <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
+    <div class="card-base z-10 px-9 py-6 relative w-full">
+      <h1 class="text-2xl font-bold mb-6">友情链接</h1>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {friendLinks.map((friend) => (
+          <a href={friend.url} target="_blank" rel="noopener noreferrer" class="block">
+            <div class="p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow duration-300 h-full flex flex-col">
+              <div class="flex items-center mb-3">
+                <img src={friend.logo} alt={`${friend.name} logo`} class="w-12 h-12 rounded-full mr-3" />
+                <h3 class="text-lg font-medium">{friend.name}</h3>
+              </div>
+              <p class="text-sm text-gray-600 dark:text-gray-400 flex-grow">{friend.description}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <div class="mt-10 p-6 bg-gray-50 dark:bg-gray-800 rounded-lg">
+        <h2 class="text-xl font-bold mb-4">申请友链</h2>
+        <p class="mb-4">如果您想与我交换友链，请确保您的网站符合以下条件：</p>
+        <ul class="list-disc pl-5 mb-4">
+          <li>网站内容健康，无违法内容</li>
+          <li>网站已稳定运行至少3个月</li>
+          <li>网站有原创内容，且定期更新</li>
+          <li>已在您的网站添加本站友链</li>
+        </ul>
+        <p>申请友链请提供以下信息：</p>
+        <ul class="list-disc pl-5">
+          <li>网站名称</li>
+          <li>网站Logo (推荐尺寸: 128x128px)</li>
+          <li>网站链接</li>
+          <li>网站简短描述</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</MainGridLayout>

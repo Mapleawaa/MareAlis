@@ -2,6 +2,7 @@
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
+import "../styles/fonts.css";
 
 import ConfigCarrier from "@components/ConfigCarrier.astro";
 import { profileConfig, siteConfig } from "@/config";
@@ -19,6 +20,7 @@ import { defaultFavicons } from "../constants/icon";
 import type { Favicon } from "../types/config";
 import { pathsEqual, url } from "../utils/url-utils";
 import "katex/dist/katex.css";
+import ImageWrapper from "../components/misc/ImageWrapper.astro";
 
 interface Props {
 	title?: string;
@@ -93,6 +95,11 @@ const bannerOffset =
         ) : (
         <meta property="og:type" content="website" />
         )}
+
+		<!-- 引入LXGW WenKai字体 -->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@callmebill/lxgw-wenkai-web@latest/style.css" />
+		<!-- 引入Maple Mono字体 -->
+		<link rel="stylesheet" href="https://chinese-fonts-cdn.deno.dev/packages/maple-mono-cn/dist/MapleMono-CN-Regular/result.css" />
 
 		<meta name="twitter:card" content="summary_large_image">
 		<meta property="twitter:url" content={Astro.url}>
@@ -368,15 +375,25 @@ async function fetchPageStats(pageUrl: string, isHomepageTotal: boolean = false)
 		</script>
 
 	</head>
-	<body class=" min-h-screen transition " class:list={[{"lg:is-home": isHomePage, "enable-banner": enableBanner}]}
-		  data-overlayscrollbars-initialize
-	>
-		<ConfigCarrier></ConfigCarrier>
-		<slot />
+	<body class=" min-h-screen transition " class:list={[{"lg:is-home": isHomePage, "enable-banner": enableBanner, "enable-background": siteConfig.background.enable}]}
+	  data-overlayscrollbars-initialize
+>
+	{siteConfig.background.enable && 
+		<div id="global-background" class="fixed inset-0 w-full h-full pointer-events-none z-[-1] overflow-hidden" style={`--bg-opacity: ${(siteConfig.background.opacity || 15) / 100};`}>
+			<ImageWrapper 
+				src={siteConfig.background.src} 
+				alt="Background image" 
+				position={siteConfig.background.position || "center"} 
+				class={`w-full h-full ${siteConfig.background.fixed ? 'fixed' : ''}`}
+			/>
+		</div>
+	}
+	<ConfigCarrier></ConfigCarrier>
+	<slot />
 
-		<!-- increase the page height during page transition to prevent the scrolling animation from jumping -->
-		<div id="page-height-extend" class="hidden h-[300vh]"></div>
-	</body>
+	<!-- increase the page height during page transition to prevent the scrolling animation from jumping -->
+	<div id="page-height-extend" class="hidden h-[300vh]"></div>
+</body>
 </html>
 
 <style is:global define:vars={{
@@ -410,6 +427,11 @@ async function fetchPageStats(pageUrl: string, isHomepageTotal: boolean = false)
 	}
 	.navbar-hidden {
 		@apply opacity-0 -translate-y-16
+	}
+	
+	/* 背景图片透明度类 */
+	#global-background img {
+		opacity: var(--bg-opacity, 0.15);
 	}
 }
 </style>
